@@ -58,4 +58,4 @@ go test ./...
 go run . version
 ```
 
-Releases are built with GoReleaser from `.goreleaser.yaml`. Tag `v0.1.0` and the archives are ready to publish on [krew](https://krew.sigs.k8s.io/docs/developer-guide/distributing-with-krew/).
+Releases are built with GoReleaser from `.goreleaser.yaml`. Pushing a `v0.1.0` tag runs the release workflow, which publishes the archives and opens the [krew](https://krew.sigs.k8s.io/docs/developer-guide/distributing-with-krew/) index update from `.krew/apf.yaml`.
