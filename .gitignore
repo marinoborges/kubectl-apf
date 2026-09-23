@@ -1,0 +1,4 @@
+/kubectl-apf
+/dist/
+*.exe
+*.test
