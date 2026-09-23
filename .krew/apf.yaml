@@ -5,7 +5,7 @@ metadata:
 spec:
   version: {{ .TagName }}
   homepage: https://github.com/marinoborges/kubectl-apf
-  shortDescription: Show API Priority and Fairness priority levels and flow schemas
+  shortDescription: Show APF priority levels and flow schemas
   description: |
     Lists PriorityLevelConfiguration and FlowSchema objects, and reads the
     in-memory API Priority and Fairness snapshots for queues and requests.
