@@ -1,22 +1,10 @@
 # kubectl-apf
 
-`kubectl apf` shows help for this API Priority and Fairness (APF) plugin. `kubectl apf detail` shows priority levels and the flow schemas that select into them.
+`kubectl apf` shows API Priority and Fairness (APF) priority levels, the flow schemas that select into them, and the API server's in-memory debug dumps for queues and requests.
 
-```text
-kubectl apf detail workload-low
-PriorityLevelConfigurations
-NAME           TYPE     SHARES  LEND  BORROW  RESPONSE         WAITING  EXECUTING  REJECTED  FLOWS
-workload-low   Limited  100     50%   0%      Queue 128/6/50   12       4          30        2
+`plcs` and `detail` list priority levels and join the live counters. `flows` lists FlowSchema objects. `match` reports which schema a user, verb, and resource would hit. `queues`, `requests`, and `users` read the current dump. Requests that start and finish between polls never appear. A record of requests over a long interval is the API server audit log.
 
-FlowSchemas
-PREC  FLOW SCHEMA       DISTINGUISHER  SUBJECTS
-1000  replicaset-controller  ByUser  sa:kube-system/replicaset-controller
-9000  service-accounts  ByUser         group:system:serviceaccounts
-```
-
-`kubectl apf detail all` lists every priority level under `PriorityLevelConfigurations`, then prints `PriorityLevelConfigurations X FlowSchemas` once before the flow schemas under each level.
-
-`Queue 128/6/50` is the number of queues, the hand size, and the queue length limit. Flow schemas are listed in matching order: a lower precedence is chosen first.
+`--context` and `--kubeconfig` work the same way as kubectl.
 
 | Command | What it shows |
 |---|---|
@@ -29,21 +17,32 @@ PREC  FLOW SCHEMA       DISTINGUISHER  SUBJECTS
 | `kubectl apf queues [name...]` | Queues with requests waiting or executing. `queue` is an alias. `--all` includes idle queues. Names limit the list to those priority levels |
 | `kubectl apf requests [name...]` | Requests waiting or executing right now. Names limit the list to those priority levels. `--omit-observer` hides this command's own debug request |
 
-`kubectl apf queues` reads `/debug/api_priority_and_fairness/dump_queues`, one row per shuffle-shard queue. Idle queues are left out unless `--all` is set.
-
-`kubectl apf requests` reads `/debug/api_priority_and_fairness/dump_requests`. That endpoint is a snapshot of requests waiting in a queue or executing when the API server answers. This plugin can only poll that endpoint and keep the rows it sees. Requests that start and finish between polls never appear. A record of requests over a long interval is the API server audit log, where each request is logged with the flow schema and priority level that handled it.
-
-`--context` and `--kubeconfig` work the same way as kubectl.
-
 ## Install
 
+Download the [v0.1.0](https://github.com/marinoborges/kubectl-apf/releases/tag/v0.1.0) archive for the machine and put `kubectl-apf` on `PATH`. The binary name has to be `kubectl-apf`. kubectl turns `kubectl apf` into that executable.
+
 ```bash
-go build -o kubectl-apf .
-install kubectl-apf ~/.local/bin/
-kubectl apf
+mkdir -p ~/.local/bin
+curl -fsSL -o /tmp/kubectl-apf.tar.gz \
+  https://github.com/marinoborges/kubectl-apf/releases/download/v0.1.0/kubectl-apf_linux_amd64.tar.gz
+tar -xzf /tmp/kubectl-apf.tar.gz -C ~/.local/bin kubectl-apf
+chmod +x ~/.local/bin/kubectl-apf
 ```
 
-The binary name has to be `kubectl-apf`. kubectl turns `kubectl apf` into that executable.
+| Machine | Archive |
+|---|---|
+| Mac, Apple silicon | `kubectl-apf_darwin_arm64.tar.gz` |
+| Mac, Intel | `kubectl-apf_darwin_amd64.tar.gz` |
+| Ubuntu, 64-bit Intel or AMD | `kubectl-apf_linux_amd64.tar.gz` |
+| Ubuntu, 64-bit ARM | `kubectl-apf_linux_arm64.tar.gz` |
+
+If `~/.local/bin` is not already on `PATH`, add it in `~/.bashrc` on Ubuntu or `~/.zshrc` on a Mac:
+
+```bash
+export PATH="$HOME/.local/bin:$PATH"
+```
+
+`kubectl apf version` prints `0.1.0`.
 
 ## Permissions
 
@@ -55,6 +54,7 @@ Live counters come from `/debug/api_priority_and_fairness/dump_priority_levels`,
 
 ```bash
 go test ./...
+go build -o kubectl-apf .
 go run . version
 ```
 
