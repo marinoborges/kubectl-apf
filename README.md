@@ -17,6 +17,14 @@
 | `kubectl apf queues [name...]` | Queues with requests waiting or executing. `queue` is an alias. `--all` includes idle queues. Names limit the list to those priority levels |
 | `kubectl apf requests [name...]` | Requests waiting or executing right now. Names limit the list to those priority levels. `--omit-observer` hides this command's own debug request |
 
+## Demo
+
+Recorded on a one-node [kind](https://kind.sigs.k8s.io/) cluster with no CNI and no kube-proxy. The node was limited to 768Mi of memory.
+
+![kubectl apf on a kind cluster](docs/kubectl-apf.gif)
+
+Play the same recording with `asciinema play docs/kubectl-apf.cast`.
+
 ## Install
 
 Download the [v0.1.0](https://github.com/marinoborges/kubectl-apf/releases/tag/v0.1.0) archive for the machine and put `kubectl-apf` on `PATH`. The binary name has to be `kubectl-apf`. kubectl turns `kubectl apf` into that executable.
