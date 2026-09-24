@@ -19,7 +19,7 @@
 
 ## Demo
 
-Recorded on a one-node [kind](https://kind.sigs.k8s.io/) cluster with no CNI and no kube-proxy. The node was limited to 768Mi of memory.
+Recorded on a one-node [kind](https://kind.sigs.k8s.io/) cluster with no CNI and no kube-proxy.
 
 ![kubectl apf on a kind cluster](docs/kubectl-apf.gif)
 
@@ -27,12 +27,12 @@ Play the same recording with `asciinema play docs/kubectl-apf.cast`.
 
 ## Install
 
-Download the [v0.1.0](https://github.com/marinoborges/kubectl-apf/releases/tag/v0.1.0) archive for the machine and put `kubectl-apf` on `PATH`. The binary name has to be `kubectl-apf`. kubectl turns `kubectl apf` into that executable.
+Download the [latest release](https://github.com/marinoborges/kubectl-apf/releases/latest) archive for the machine and put `kubectl-apf` on `PATH`. The binary name has to be `kubectl-apf`. kubectl turns `kubectl apf` into that executable.
 
 ```bash
 mkdir -p ~/.local/bin
 curl -fsSL -o /tmp/kubectl-apf.tar.gz \
-  https://github.com/marinoborges/kubectl-apf/releases/download/v0.1.0/kubectl-apf_linux_amd64.tar.gz
+  https://github.com/marinoborges/kubectl-apf/releases/latest/download/kubectl-apf_linux_amd64.tar.gz
 tar -xzf /tmp/kubectl-apf.tar.gz -C ~/.local/bin kubectl-apf
 chmod +x ~/.local/bin/kubectl-apf
 ```
@@ -50,7 +50,7 @@ If `~/.local/bin` is not already on `PATH`, add it in `~/.bashrc` on Ubuntu or `
 export PATH="$HOME/.local/bin:$PATH"
 ```
 
-`kubectl apf version` prints `0.1.0`.
+`kubectl apf version` prints the installed release.
 
 ## Permissions
 
@@ -66,4 +66,4 @@ go build -o kubectl-apf .
 go run . version
 ```
 
-Releases are built with GoReleaser from `.goreleaser.yaml`. Pushing a `v0.1.0` tag runs the release workflow, which publishes the archives and opens the [krew](https://krew.sigs.k8s.io/docs/developer-guide/distributing-with-krew/) index update from `.krew/apf.yaml`.
+Releases are built with GoReleaser from `.goreleaser.yaml`. Pushing a version tag runs the release workflow, which publishes the archives and opens the [krew](https://krew.sigs.k8s.io/docs/developer-guide/distributing-with-krew/) index update from `.krew/apf.yaml`.
